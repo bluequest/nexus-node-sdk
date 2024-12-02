@@ -1,6 +1,6 @@
 # Nexus Node.js SDK
 
-The **Nexus Node.js SDK** simplifies integration with the Nexus platform, enabling you to handle attributions, manage members, and process transactions with ease. Designed for game and backend developers, this SDK provides a seamless way to implement Nexus' creator program APIs in your backend applications.
+The **Nexus Node.js SDK** simplifies integration with the Nexus platform, enabling you to handle attributions, manage members, and process transactions with ease. Designed for game developers and backend server engineers, this SDK provides a seamless way to implement Nexus' creator program APIs in your backend applications.
 
 ---
 
