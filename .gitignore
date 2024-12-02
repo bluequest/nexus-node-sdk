@@ -1,0 +1,48 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*.local
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage output
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Lint and formatting reports
+eslint-report.*
+prettier-report.*
+
+# npm and yarn lock files (if applicable, depending on preference)
+# Uncomment one of the following if you use only one package manager:
+# yarn.lock
+# package-lock.json
+
+# Optional: Ignore Jest snapshots if using snapshot testing
+*.snap
+

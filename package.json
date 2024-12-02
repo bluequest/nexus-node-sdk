@@ -1,0 +1,54 @@
+{
+  "name": "nexus-node-sdk",
+  "version": "0.0.1",
+  "description": "The Nexus Node.js SDK simplifies integration with the Nexus platform by providing easy-to-use methods for handling attributions. Use this SDK to look up attribution group members and send transactions with minimal setup. Perfect for developers integrating Nexus' creator program APIs into their applications.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write .",
+    "test": "jest",
+    "start": "node dist/index.js"
+  },
+  "author": {
+    "name": "Nexus",
+    "email": "support@nexus.gg",
+    "url": "https://nexus.gg"
+  },
+  "license": "ISC",
+  "keywords": [
+    "nexus",
+    "nexus-sdk",
+    "node-sdk",
+    "api-sdk",
+    "attributions",
+    "creator-program",
+    "game-integration",
+    "transactions",
+    "member-lookup",
+    "developer-tools",
+    "javascript-sdk",
+    "node-api",
+    "api-client",
+    "gaming",
+    "monetization",
+    "integration",
+    "game-developers"
+  ],
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.1",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "jest": "^29.7.0",
+    "nock": "^13.5.6",
+    "prettier": "^3.4.1",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "axios": "^1.7.8"
+  }
+}

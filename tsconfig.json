@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS", // Output CommonJS modules
+    "target": "ES6", // Compatible with modern environments
+    "outDir": "dist", // Output directory for compiled files
+    "rootDir": "src", // Root directory of source files
+    "strict": true, // Enable strict type-checking
+    "moduleResolution": "node", // Use Node.js-style module resolution
+    "allowJs": true, // Allow JavaScript files
+    "esModuleInterop": true, // Ensure compatibility with CommonJS modules
+    "forceConsistentCasingInFileNames": true, // Enforce case consistency
+    "strictNullChecks": false, // Disable strict null checks for flexibility
+    "baseUrl": "./", // Base URL for resolving non-relative module names
+    "typeRoots": ["./node_modules/@types"] // Default type declarations
+  },
+  "include": ["src/**/*"]
+}
