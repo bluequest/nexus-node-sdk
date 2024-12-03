@@ -13,5 +13,6 @@
     "baseUrl": "./", // Base URL for resolving non-relative module names
     "typeRoots": ["./node_modules/@types"] // Default type declarations
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["examples/**/*", "node_modules"]
 }
