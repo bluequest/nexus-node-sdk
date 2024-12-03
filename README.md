@@ -271,6 +271,31 @@ const updatedTransaction = await NexusGG.attribution.updateTransaction(
 );
 ```
 
+### Currency Utilities
+
+The SDK provides utilities to access and validate supported currencies.
+
+#### Supported Currencies
+
+You can access the list of supported currencies using the `Currency` enum:
+
+```typescript
+import NexusGG from 'nexus-sdk';
+
+console.log(Object.values(NexusGG.currencies.Currency));
+```
+
+#### Zero-Decimal Currencies
+
+Zero-decimal currencies (e.g., JPY, VND) can be validated using the `ZERO_DECIMAL_CURRENCIES` set:
+
+```typescript
+import NexusGG from 'nexus-sdk';
+
+const isZeroDecimal = NexusGG.currencies.ZERO_DECIMAL_CURRENCIES.has('JPY');
+console.log('Is JPY zero-decimal?', isZeroDecimal); // true
+```
+
 ---
 
 ## Testing Your Integration
@@ -382,3 +407,7 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+```
+
+```

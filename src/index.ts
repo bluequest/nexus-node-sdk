@@ -12,6 +12,7 @@ import {
   listScheduledRevShares,
 } from './services/manage';
 import { sendTransaction, updateTransaction } from './services/attribution';
+import { Currency, ZERO_DECIMAL_CURRENCIES } from './types/currencies';
 
 const NexusGG = {
   /**
@@ -50,6 +51,11 @@ const NexusGG = {
   attribution: {
     sendTransaction,
     updateTransaction,
+  },
+
+  currencies: {
+    Currency,
+    ZERO_DECIMAL_CURRENCIES,
   },
 };
 
