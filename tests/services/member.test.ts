@@ -1,7 +1,7 @@
 import nock from 'nock';
 import { setupHttpMock } from '../setupHttpMock';
 import NexusGG from '../../src';
-import { AuthenticationError } from '../../src/core/errors';
+import { AuthenticationError } from '@core/errors';
 
 describe('Member Services', () => {
   const baseURL = 'https://mock.api.nexus.gg';

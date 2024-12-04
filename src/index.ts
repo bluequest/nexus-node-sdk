@@ -1,4 +1,4 @@
-import { setConfig } from './core/config';
+import { setConfig } from '@core/config';
 import {
   generateCode,
   linkExistingNexus,
@@ -10,11 +10,10 @@ import {
   getTierDetails,
   scheduleRevShare,
   listScheduledRevShares,
-} from './services/manage';
-import { sendTransaction, updateTransaction } from './services/attribution';
-import { Currency, ZERO_DECIMAL_CURRENCIES } from './types/currencies';
-
-require('module-alias/register');
+} from '@services/manage';
+import { sendTransaction, updateTransaction } from '@services/attribution';
+import { Currency, ZERO_DECIMAL_CURRENCIES } from '@types/currencies';
+import 'module-alias/register';
 
 const NexusGG = {
   /**

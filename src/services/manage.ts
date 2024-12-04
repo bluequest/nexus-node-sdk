@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { makeRequest } from '../core/httpUtils';
+import { makeRequest } from '@core/httpUtils';
 import {
   AllMembersResponse,
   MemberResponse,
@@ -13,7 +13,7 @@ import {
   ScheduleRevShareRequest,
   ScheduleRevShareResponse,
   ListScheduledRevSharesResponse,
-} from '../types/manage';
+} from '@types/manage';
 
 /**
  * Fetches all members for a group.

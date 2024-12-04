@@ -13,7 +13,9 @@
     "baseUrl": "./src", // Base URL for resolving non-relative module names
     "typeRoots": ["./node_modules/@types"], // Default type declarations
     "paths": {
-      "@core/*": ["core/*"] // Alias for core utilities
+      "@core/*": ["src/core/*"], // Alias for core directory
+      "@services/*": ["src/services/*"], // Alias for services directory
+      "@types/*": ["src/types/*"]
     }
   },
   "include": ["src/**/*"],

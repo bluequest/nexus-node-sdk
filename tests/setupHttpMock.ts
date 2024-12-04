@@ -1,5 +1,5 @@
 import nock from 'nock';
-import { Config } from '../src/core/config';
+import { Config } from '@core/config';
 
 export const setupHttpMock = (baseURL: string) => {
   Config.baseURL = baseURL;

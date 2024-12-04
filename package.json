@@ -22,7 +22,9 @@
     "node": ">=16.0.0"
   },
   "_moduleAliases": {
-    "@core": "dist/core"
+    "@core": "dist/core",
+    "@services": "dist/services",
+    "@types": "dist/types"
   },
   "author": {
     "name": "Nexus",
