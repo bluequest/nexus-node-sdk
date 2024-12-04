@@ -85,6 +85,36 @@ NexusGG.config(
 
 The `manage` service includes methods for managing members, tiers, and revenue shares.
 
+#### Get Member By Code Or Id
+
+Fetch a single member of a group:
+
+```javascript
+const members = await NexusGG.manage.getMemberByCodeOrId(
+  { groupId: '-XgND9kJQRre_UzlaptAE' },
+  'dasneids',
+);
+```
+
+**Example Response:**
+
+```json
+{
+  "groupId": "-XgND9kJQRre_UzlaptAE",
+  "groupName": "Bluequest",
+  "id": "oleyE4Z6zwN07YnytKuw2",
+  "name": "DasNeids Gaming",
+  "codes": [
+    {
+      "code": "dasneids",
+      "isPrimary": true,
+      "isGenerated": false,
+      "isManaged": false
+    }
+  ]
+}
+```
+
 #### Get All Members
 
 Fetch all members of a group:
@@ -132,36 +162,6 @@ const members = await NexusGG.manage.getAllMembers({
           "isManaged": false
         }
       ]
-    }
-  ]
-}
-```
-
-#### Get Member By Code Or Id
-
-Fetch a single member of a group:
-
-```javascript
-const members = await NexusGG.manage.getMemberByCodeOrId(
-  { groupId: '-XgND9kJQRre_UzlaptAE' },
-  'dasneids',
-);
-```
-
-**Example Response:**
-
-```json
-{
-  "groupId": "-XgND9kJQRre_UzlaptAE",
-  "groupName": "Bluequest",
-  "id": "oleyE4Z6zwN07YnytKuw2",
-  "name": "DasNeids Gaming",
-  "codes": [
-    {
-      "code": "dasneids",
-      "isPrimary": true,
-      "isGenerated": false,
-      "isManaged": false
     }
   ]
 }
@@ -218,7 +218,7 @@ const response = await NexusGG.manage.linkExistingNexus(
 );
 ```
 
-#### Link Existing Nexus
+#### Schedule Revenue Share
 
 Schedule a temporary revenue share:
 
