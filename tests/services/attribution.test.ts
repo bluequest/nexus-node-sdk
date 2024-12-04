@@ -1,7 +1,7 @@
 import nock from 'nock';
 import { setupHttpMock } from '../setupHttpMock';
 import NexusGG from '../../src';
-import { UpdateTransactionRequest } from '@services/attribution';
+import { UpdateTransactionRequest } from '../../src/services/attribution';
 
 describe('Transaction Service', () => {
   const baseURL = 'https://mock.api.nexus.gg';

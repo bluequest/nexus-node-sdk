@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
@@ -20,11 +21,6 @@
   ],
   "engines": {
     "node": ">=16.0.0"
-  },
-  "_moduleAliases": {
-    "@core": "dist/core",
-    "@services": "dist/services",
-    "@types": "dist/types"
   },
   "author": {
     "name": "Nexus",
@@ -61,6 +57,7 @@
     "nock": "^13.5.6",
     "prettier": "^3.4.1",
     "ts-jest": "^29.2.5",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2"
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-import { Currency, ZERO_DECIMAL_CURRENCIES } from '@types/currencies';
+import { Currency, ZERO_DECIMAL_CURRENCIES } from '../../src/types/currencies';
 
 describe('Currency Utilities', () => {
   it('should expose the Currency enum with all supported currencies', () => {

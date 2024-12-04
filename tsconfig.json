@@ -11,12 +11,7 @@
     "forceConsistentCasingInFileNames": true, // Enforce case consistency
     "strictNullChecks": false, // Disable strict null checks for flexibility
     "baseUrl": "./src", // Base URL for resolving non-relative module names
-    "typeRoots": ["./node_modules/@types"], // Default type declarations
-    "paths": {
-      "@core/*": ["src/core/*"], // Alias for core directory
-      "@services/*": ["src/services/*"], // Alias for services directory
-      "@types/*": ["src/types/*"]
-    }
+    "typeRoots": ["./node_modules/@types"] // Default type declarations
   },
   "include": ["src/**/*"],
   "exclude": ["examples/**/*", "node_modules"]
