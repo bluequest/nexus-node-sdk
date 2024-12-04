@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { makeRequest } from '../../src/core/httpUtils';
+import { makeRequest } from '@core/httpUtils';
 import {
   TransactionDetails,
   TransactionResponse,

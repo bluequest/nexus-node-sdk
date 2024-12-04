@@ -14,6 +14,8 @@ import {
 import { sendTransaction, updateTransaction } from './services/attribution';
 import { Currency, ZERO_DECIMAL_CURRENCIES } from './types/currencies';
 
+require('module-alias/register');
+
 const NexusGG = {
   /**
    * Configure the Nexus SDK.
