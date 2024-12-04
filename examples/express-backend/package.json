@@ -1,15 +1,27 @@
 {
-  "name": "backend",
+  "name": "nexus-tutorial-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "dev": "nodemon --ignore 'db.json' server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "express",
+    "tutorial",
+    "Nexus",
+    "backend",
+    "example"
+  ],
+  "author": {
+    "name": "Nexus",
+    "email": "support@nexus.gg",
+    "url": "https://nexus.gg"
+  },
+  "license": "MIT",
+  "description": "An Express.js backend tutorial using the Nexus SDK. This project is for educational purposes only and should not be used in production environments.",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
@@ -23,6 +35,10 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-node": "^11.1.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.2.0"
   }
 }

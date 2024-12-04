@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 
 const users = [];
 
@@ -10,7 +10,7 @@ class User {
     this.playerName = playerName;
   }
 
-  // For tutorial purposes only
+  // For tutorial purposes
   static generatePlayerName() {
     const randomPart = Math.random().toString(36).substring(2, 8);
     const timestampPart = Date.now().toString(36);

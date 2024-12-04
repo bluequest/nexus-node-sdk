@@ -3,6 +3,7 @@ const NexusGG = require('nexus-node-sdk');
 // delay helper for demo purposes
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// transactionId generation for demo purposes
 const generateTransactionId = () => {
   const randomPart = Math.random().toString(36).substring(2, 8);
   const timestampPart = Date.now().toString(36);
@@ -11,12 +12,18 @@ const generateTransactionId = () => {
 
 exports.purchaseItem = async (req, res) => {
   const { skuId, playerName, creatorCode } = req.body;
-  console.log(req.body);
 
-  // Mimic purchasing besing sent to payment gateway
+  // mock retrieving item information
+  const itemInformation = {
+    id: 'item_1234',
+    skuId: skuId,
+    description: 'Healing Pot',
+  };
+
+  // mock purchasing besing sent to payment gateway
   await delay(2000);
 
-  // mimic data sent back from payment gateway
+  // mock data sent back from payment gateway
   const transactionDetailsFromGateway = {
     transactionId: generateTransactionId(),
     transactionDate: new Date().toISOString(),
@@ -24,6 +31,7 @@ exports.purchaseItem = async (req, res) => {
     currency: 'USD',
   };
 
+  // send successful response to award item in-game
   res.status(200).json({
     message: 'Purchase Successful',
     data: {
@@ -32,12 +40,7 @@ exports.purchaseItem = async (req, res) => {
     },
   });
 
-  const itemInformation = {
-    skuId: 'sku123',
-    description: 'Healing Pot',
-  };
-
-  // mimic player lookup from playerName provided
+  // mock player lookup from playerName provided
   const playerData = {
     gameJoinDate: '2024-01-15T00:00:00.000Z',
     lastPurchaseDate: '2024-05-01T00:00:00.000Z',
@@ -45,7 +48,7 @@ exports.purchaseItem = async (req, res) => {
     totalSpendCurrency: 'USD',
   };
 
-  // After item is rewarded send transaction to Nexus
+  // mock transaction data for Nexus API
   const callback = async () => {
     try {
       const transactionDetails = {
@@ -69,6 +72,7 @@ exports.purchaseItem = async (req, res) => {
         },
       };
 
+      // creator program groupId (only required if more than 1 creator program exists)
       const groupId = '-XgND9kJQRre_UzlaptAE';
 
       const transactionResponse = await NexusGG.attribution.sendTransaction(
@@ -85,58 +89,5 @@ exports.purchaseItem = async (req, res) => {
   // Only send transaction to Nexus if creator code is found
   if (creatorCode && creatorCode.trim() !== '') {
     callback();
-  }
-};
-
-exports.sendTransaction = async (req, res) => {
-  const transactionDetails = {
-    playerName: 'DasNeids Gaming',
-    code: 'dasneids',
-    currency: 'USD',
-    description: 'Purchase of 500 Gems',
-    platform: 'PC',
-    status: 'completed',
-    subtotal: 4999,
-    transactionId: 'txn_12345',
-    transactionDate: new Date().toISOString(),
-    metrics: {
-      joinDate: '2024-01-15T00:00:00.000Z',
-      conversion: {
-        lastPurchaseDate: '2024-11-30T00:00:00.000Z',
-        totalSpendToDate: {
-          total: 249.99,
-          currency: 'USD',
-        },
-      },
-    },
-  };
-
-  const groupId = '-XgND9kJQRre_UzlaptAE';
-
-  try {
-    const transactionResponse = await NexusGG.sendTransaction(
-      transactionDetails,
-      { groupId },
-    );
-
-    console.log('Transaction sent successfully:');
-    console.log(
-      'Transaction ID:',
-      transactionResponse.transaction.transactionId,
-    );
-    console.log(
-      'Total:',
-      transactionResponse.transaction.total,
-      transactionResponse.transaction.totalCurrency,
-    );
-    console.log('Player Name:', transactionResponse.transaction.playerName);
-  } catch (error) {
-    if (error.code === 'AuthenticationError') {
-      console.error('Authentication failed:', error.message);
-    } else if (error.code === 'BadRequestError') {
-      console.error('Bad request:', error.message);
-    } else {
-      console.error('An unexpected error occurred:', error.message);
-    }
   }
 };

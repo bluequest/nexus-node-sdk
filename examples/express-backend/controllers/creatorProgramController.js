@@ -1,5 +1,6 @@
-const NexusGG = require("nexus-node-sdk");
+const NexusGG = require('nexus-node-sdk');
 
+// Check if a creator is in the Nexus creator program
 exports.validateCode = async (req, res) => {
   const { code } = req.params;
 
@@ -8,19 +9,20 @@ exports.validateCode = async (req, res) => {
 
     res.status(200).send(member);
   } catch (error) {
-    if (error.code === "AuthenticationError") {
+    if (error.code === 'AuthenticationError') {
       res.status(401).json({ message: error.message });
-    } else if (error.code === "MemberNotFoundError") {
+    } else if (error.code === 'MemberNotFoundError') {
       res.status(404).json({ message: error.message });
-    } else if (error.code === "BadRequestError") {
+    } else if (error.code === 'BadRequestError') {
       res.status(400).json({ message: error.message });
     } else {
-      console.error("Unhandled error:", error);
-      res.status(500).json({ message: "Server error" });
+      console.error('Unhandled error:', error);
+      res.status(500).json({ message: 'Server error' });
     }
   }
 };
 
+// Get all creators in the Nexus creator program
 exports.getAllMembers = async (req, res) => {
   try {
     const queryParams = {
@@ -31,15 +33,15 @@ exports.getAllMembers = async (req, res) => {
 
     res.status(200).send(members);
   } catch (error) {
-    if (error.code === "AuthenticationError") {
+    if (error.code === 'AuthenticationError') {
       res.status(401).json({ message: error.message });
-    } else if (error.code === "MemberNotFoundError") {
+    } else if (error.code === 'MemberNotFoundError') {
       res.status(404).json({ message: error.message });
-    } else if (error.code === "BadRequestError") {
+    } else if (error.code === 'BadRequestError') {
       res.status(400).json({ message: error.message });
     } else {
-      console.error("Unhandled error:", error);
-      res.status(500).json({ message: "Server error" });
+      console.error('Unhandled error:', error);
+      res.status(500).json({ message: 'Server error' });
     }
   }
 };
