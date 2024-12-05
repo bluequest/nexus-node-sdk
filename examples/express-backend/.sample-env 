@@ -1,0 +1,5 @@
+JWT_SECRET=your-super-secret-key
+JWT_EXPIRATION=3600 # Token valid for 1 hour
+
+# Nexus Sandbox
+NEXUS_PUBLIC_KEY=nexus_pk_
