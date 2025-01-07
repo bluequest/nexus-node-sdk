@@ -1,10 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
-import { makeRequest } from '../../src/core/httpUtils';
-import {
-  TransactionDetails,
-  TransactionResponse,
-} from '../../src/types/attribution';
-import { Currency, ZERO_DECIMAL_CURRENCIES } from '../../src/types/currencies';
+import { makeRequest } from '../core/httpUtils';
+import { TransactionDetails, TransactionResponse } from '../types/attribution';
+import { Currency, ZERO_DECIMAL_CURRENCIES } from '../types/currencies';
 
 export interface UpdateTransactionRequest {
   action: 'Refund' | 'Fraud' | 'Chargeback';

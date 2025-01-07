@@ -5,11 +5,22 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
     "test": "jest",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prepare": "npm run build"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "examples/"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
   },
   "author": {
     "name": "Nexus",
@@ -46,9 +57,18 @@
     "nock": "^13.5.6",
     "prettier": "^3.4.1",
     "ts-jest": "^29.2.5",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2"
   },
   "dependencies": {
     "axios": "^1.7.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bluequest/nexus-node-sdk"
+  },
+  "homepage": "https://github.com/bluequest/nexus-node-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/bluequest/nexus-node-sdk/issues"
   }
 }

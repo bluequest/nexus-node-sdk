@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { Config } from './config';
-import { handleError } from './errorHandler';
+import { Config } from '../core/config';
+import { handleError } from '../core/errorHandler';
 
 export const getHttpClient = (keyType: 'public' | 'private'): AxiosInstance => {
   const apiKey = keyType === 'public' ? Config.publicKey : Config.privateKey;
