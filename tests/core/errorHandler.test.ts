@@ -80,4 +80,55 @@ describe('handleError', () => {
       'Failed to communicate with the Nexus API.',
     );
   });
+
+  it('should handle 403 Forbidden status', () => {
+    const mockError = {
+      response: {
+        status: 403,
+        data: {
+          message: 'Access forbidden.',
+        },
+      },
+    };
+
+    expect(() => handleError(mockError)).toThrow(ServerError);
+    expect(() => handleError(mockError)).toThrow('Access forbidden.');
+  });
+
+  it('should handle 404 Not Found status', () => {
+    const mockError = {
+      response: {
+        status: 404,
+        data: {
+          message: 'Resource not found.',
+        },
+      },
+    };
+
+    expect(() => handleError(mockError)).toThrow(ServerError);
+    expect(() => handleError(mockError)).toThrow('Resource not found.');
+  });
+
+  it('should handle 429 Too Many Requests status', () => {
+    const mockError = {
+      response: {
+        status: 429,
+        data: {
+          message: 'Rate limit exceeded.',
+        },
+      },
+    };
+
+    expect(() => handleError(mockError)).toThrow(ServerError);
+    expect(() => handleError(mockError)).toThrow('Rate limit exceeded.');
+  });
+
+  it('should handle network errors without response', () => {
+    const mockError = new Error('Network Error');
+
+    expect(() => handleError(mockError)).toThrow(ServerError);
+    expect(() => handleError(mockError)).toThrow(
+      'Failed to communicate with the Nexus API.',
+    );
+  });
 });

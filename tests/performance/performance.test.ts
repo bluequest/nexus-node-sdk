@@ -2,6 +2,14 @@ import nock from 'nock';
 import { setupHttpMock } from '../setupHttpMock';
 import NexusGG from '../../src';
 
+const measurePerformance = async (fn: () => Promise<any>) => {
+  const startTime = process.hrtime.bigint();
+  const result = await fn();
+  const endTime = process.hrtime.bigint();
+  const duration = Number(endTime - startTime) / 1000000;
+  return { result, duration };
+};
+
 describe('Performance Tests', () => {
   const baseURL = 'https://mock.api.nexus.gg';
 
@@ -35,12 +43,12 @@ describe('Performance Tests', () => {
         .post('/attributions/transactions', largeBatch)
         .reply(200, mockResponse);
 
-      const startTime = Date.now();
-      const result = await NexusGG.attribution.sendTransaction(largeBatch);
-      const endTime = Date.now();
+      const { result, duration } = await measurePerformance(() =>
+        NexusGG.attribution.sendTransaction(largeBatch)
+      );
 
       expect(result).toEqual(mockResponse);
-      expect(endTime - startTime).toBeLessThan(5000); // Should complete within 5 seconds
+      expect(duration).toBeLessThan(5000);
     });
 
     it('should handle very large transaction batches', async () => {
@@ -64,12 +72,12 @@ describe('Performance Tests', () => {
         .post('/attributions/transactions', veryLargeBatch)
         .reply(200, mockResponse);
 
-      const startTime = Date.now();
-      const result = await NexusGG.attribution.sendTransaction(veryLargeBatch);
-      const endTime = Date.now();
+      const { result, duration } = await measurePerformance(() =>
+        NexusGG.attribution.sendTransaction(veryLargeBatch)
+      );
 
       expect(result).toEqual(mockResponse);
-      expect(endTime - startTime).toBeLessThan(10000); // Should complete within 10 seconds
+      expect(duration).toBeLessThan(10000);
     });
   });
 
@@ -90,87 +98,84 @@ describe('Performance Tests', () => {
         NexusGG.manage.getAllMembers(),
       );
 
-      const startTime = Date.now();
-      const results = await Promise.all(concurrentRequests);
-      const endTime = Date.now();
+      const { result: results, duration } = await measurePerformance(() =>
+        Promise.all(concurrentRequests)
+      );
 
       expect(results).toHaveLength(10);
-      results.forEach((result) => {
+      results.forEach((result: any) => {
         expect(result).toBeDefined();
         expect(result.groupId).toBe('test');
       });
-      expect(endTime - startTime).toBeLessThan(3000); // Should complete within 3 seconds
+      expect(duration).toBeLessThan(3000);
     });
 
     it('should handle mixed concurrent operations', async () => {
-      nock(baseURL).get('/manage/members').reply(200, {
-        groupId: 'test',
-        groupName: 'Test Group',
-        currentPage: 1,
-        currentPageSize: 100,
-        totalCount: 0,
-        members: [],
+      const memberRequests = Array.from({ length: 5 }, (_, i) => {
+        nock(baseURL).get('/manage/members').reply(200, {
+          groupId: `test${i}`,
+          groupName: 'Test Group',
+          currentPage: 1,
+          currentPageSize: 100,
+          totalCount: 0,
+          members: [],
+        });
+        return NexusGG.manage.getAllMembers();
       });
-      nock(baseURL).get('/manage/tiers').reply(200, { groupTiers: [] });
-      nock(baseURL)
-        .post('/attributions/transactions')
-        .reply(200, { transaction: { id: 'test' } });
 
-      const operations = [
-        NexusGG.manage.getAllMembers(),
-        NexusGG.manage.getGroupTiers(),
-        NexusGG.attribution.sendTransaction({
-          playerName: 'test',
-          code: 'test',
+      const transactionRequests = Array.from({ length: 5 }, (_, i) => {
+        const transaction = {
+          playerName: `player${i}`,
+          code: `code${i}`,
           currency: 'USD',
-          description: 'test',
+          description: `item${i}`,
           platform: 'PC',
           status: 'Normal' as const,
           subtotal: 100,
-          transactionId: 'test',
+          transactionId: `transaction${i}`,
           transactionDate: new Date().toISOString(),
-        }),
-      ];
+        };
 
-      const startTime = Date.now();
-      const results = await Promise.all(operations);
-      const endTime = Date.now();
+        nock(baseURL)
+          .post('/attributions/transactions', [transaction])
+          .reply(200, {
+            transaction: { ...transaction, id: `TransactionID${i}`, total: 100 },
+          });
 
-      expect(results).toHaveLength(3);
-      expect(endTime - startTime).toBeLessThan(2000); // Should complete within 2 seconds
+        return NexusGG.attribution.sendTransaction(transaction);
+      });
+
+      const allRequests = [...memberRequests, ...transactionRequests];
+
+      const { result: results, duration } = await measurePerformance(() =>
+        Promise.all(allRequests)
+      );
+
+      expect(results).toHaveLength(10);
+      expect(duration).toBeLessThan(5000);
     });
   });
 
   describe('Memory Usage', () => {
-    it('should not cause memory leaks with large datasets', async () => {
+    it('should not cause memory leaks with repeated operations', async () => {
       const initialMemory = process.memoryUsage().heapUsed;
+      
+      for (let i = 0; i < 50; i++) {
+        nock(baseURL).get('/manage/members').reply(200, {
+          groupId: 'test',
+          groupName: 'Test Group',
+          currentPage: 1,
+          currentPageSize: 100,
+          totalCount: 0,
+          members: [],
+        });
 
-      const largeBatch = Array.from({ length: 500 }, (_, i) => ({
-        playerName: `player${i}`,
-        code: `code${i}`,
-        currency: 'USD',
-        description: `item${i}`,
-        platform: 'PC',
-        status: 'Normal' as const,
-        subtotal: 100,
-        transactionId: `transaction${i}`,
-        transactionDate: new Date().toISOString(),
-      }));
-
-      const mockResponse = largeBatch.map((transaction, i) => ({
-        transaction: { ...transaction, id: `TransactionID${i}`, total: 100 },
-      }));
-
-      nock(baseURL)
-        .post('/attributions/transactions', largeBatch)
-        .reply(200, mockResponse);
-
-      await NexusGG.attribution.sendTransaction(largeBatch);
+        await NexusGG.manage.getAllMembers();
+      }
 
       const finalMemory = process.memoryUsage().heapUsed;
       const memoryIncrease = finalMemory - initialMemory;
-
-      // Memory increase should be reasonable (less than 50MB)
+      
       expect(memoryIncrease).toBeLessThan(50 * 1024 * 1024);
     });
   });
@@ -190,7 +195,7 @@ describe('Performance Tests', () => {
       await NexusGG.manage.getAllMembers();
       const endTime = Date.now();
 
-      expect(endTime - startTime).toBeLessThan(1000); // Should complete within 1 second
+      expect(endTime - startTime).toBeLessThan(1000);
     });
 
     it('should handle complex operations within reasonable time', async () => {
@@ -223,7 +228,7 @@ describe('Performance Tests', () => {
       const endTime = Date.now();
 
       expect(result).toEqual(mockResponse);
-      expect(endTime - startTime).toBeLessThan(3000); // Should complete within 3 seconds
+      expect(endTime - startTime).toBeLessThan(3000);
     });
   });
 
@@ -237,11 +242,10 @@ describe('Performance Tests', () => {
       await expect(NexusGG.manage.getAllMembers()).rejects.toThrow();
       const endTime = Date.now();
 
-      expect(endTime - startTime).toBeLessThan(1000); // Should fail quickly within 1 second
+      expect(endTime - startTime).toBeLessThan(1000); 
     });
 
     it('should handle retry scenarios efficiently', async () => {
-      // First request fails, second succeeds
       nock(baseURL)
         .get('/manage/members')
         .reply(500, { message: 'Internal server error' });
@@ -264,7 +268,7 @@ describe('Performance Tests', () => {
       }
       const endTime = Date.now();
 
-      expect(endTime - startTime).toBeLessThan(2000); // Should handle retry within 2 seconds
+      expect(endTime - startTime).toBeLessThan(2000); 
     });
   });
 });

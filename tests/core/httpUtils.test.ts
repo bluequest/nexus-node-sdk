@@ -4,16 +4,24 @@ import { setupHttpMock } from '../setupHttpMock';
 
 jest.mock('../../src/core/errorHandler', () => ({
   handleError: jest.fn((error) => {
-    throw error; // Re-throw the error to propagate it in the test
+    throw error;
   }),
+}));
+
+jest.mock('../../src/core/config', () => ({
+  Config: {
+    baseURL: 'https://mock.api.nexus.gg',
+    publicKey: 'mockPublicKey',
+    privateKey: 'mockPrivateKey',
+  },
 }));
 
 describe('httpUtils', () => {
   const baseURL = 'https://mock.api.nexus.gg';
 
   beforeEach(() => {
-    setupHttpMock(baseURL); // Set up the Config and baseURL
-    nock.cleanAll(); // Clear any existing nock interceptors
+    setupHttpMock(baseURL);
+    nock.cleanAll();
   });
 
   afterEach(() => {
@@ -36,19 +44,27 @@ describe('httpUtils', () => {
     });
 
     it('should throw an error if public key is not set', () => {
-      const Config = require('../../src/core/config').Config;
-      Config.publicKey = ''; // Simulate missing key
+      const { Config } = require('../../src/core/config');
+      const originalPublicKey = Config.publicKey;
+      Config.publicKey = '';
+      
       expect(() => getHttpClient('public')).toThrow(
         'publicKey is not set. Please initialize the SDK with the required keys.',
       );
+      
+      Config.publicKey = originalPublicKey;
     });
 
     it('should throw an error if private key is not set', () => {
-      const Config = require('../../src/core/config').Config;
-      Config.privateKey = ''; // Simulate missing key
+      const { Config } = require('../../src/core/config');
+      const originalPrivateKey = Config.privateKey;
+      Config.privateKey = '';
+      
       expect(() => getHttpClient('private')).toThrow(
         'privateKey is not set. Please initialize the SDK with the required keys.',
       );
+      
+      Config.privateKey = originalPrivateKey;
     });
   });
 
@@ -58,7 +74,7 @@ describe('httpUtils', () => {
       nock(baseURL).get('/test').reply(200, responseMock);
 
       const result = await makeRequest('public', 'get', '/test');
-      expect(result).toEqual(responseMock); // Adjust to match the entire response structure
+      expect(result).toEqual(responseMock);
     });
 
     it('should make a POST request with data and return response data', async () => {
@@ -67,7 +83,7 @@ describe('httpUtils', () => {
       nock(baseURL).post('/test', requestData).reply(200, responseMock);
 
       const result = await makeRequest('private', 'post', '/test', requestData);
-      expect(result).toEqual(responseMock); // Adjust to match the entire response structure
+      expect(result).toEqual(responseMock);
     });
 
     it('should call handleError if a request fails', async () => {

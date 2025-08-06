@@ -222,7 +222,7 @@ describe('Transaction Service', () => {
         status: 'Normal' as const,
         subtotal: 100,
         transactionId: 'test',
-        transactionDate: 'invalid-date', // Invalid format
+        transactionDate: 'invalid-date', 
       };
 
       nock(baseURL)
@@ -236,7 +236,7 @@ describe('Transaction Service', () => {
 
     it('should validate player name is not empty', async () => {
       const emptyPlayerRequest = {
-        playerName: '', // Empty player name
+        playerName: '', 
         code: 'test',
         currency: 'USD',
         description: 'test',
@@ -265,7 +265,7 @@ describe('Transaction Service', () => {
         platform: 'PC',
         status: 'Normal' as const,
         subtotal: 100,
-        transactionId: '', // Empty transaction ID
+        transactionId: '', 
         transactionDate: new Date().toISOString(),
       };
 
@@ -365,7 +365,7 @@ describe('Transaction Service', () => {
         description: 'test',
         platform: 'PC',
         status: 'Normal' as const,
-        subtotal: 0.01, // Minimum valid amount
+        subtotal: 0.01, 
         transactionId: 'test',
         transactionDate: new Date().toISOString(),
       };
@@ -390,7 +390,7 @@ describe('Transaction Service', () => {
 
     it('should handle very long player names', async () => {
       const longNameRequest = {
-        playerName: 'a'.repeat(1000), // Very long player name
+        playerName: 'a'.repeat(1000),
         code: 'test',
         currency: 'USD',
         description: 'test',
@@ -446,7 +446,7 @@ describe('Transaction Service', () => {
       const endTime = Date.now();
 
       expect(result).toEqual(mockResponse);
-      expect(endTime - startTime).toBeLessThan(5000); // Should complete within 5 seconds
+      expect(endTime - startTime).toBeLessThan(5000);
     });
   });
 });

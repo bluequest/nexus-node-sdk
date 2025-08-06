@@ -26,7 +26,7 @@ describe('Security Tests', () => {
     });
 
     it('should validate API key format', async () => {
-      // Test with invalid API key format
+      // test with invalid API key format
       expect(() => NexusGG.config('', 'invalid-secret')).toThrow();
       expect(() => NexusGG.config('invalid-key', '')).toThrow();
     });
@@ -54,10 +54,9 @@ describe('Security Tests', () => {
       try {
         await NexusGG.manage.getAllMembers();
       } catch (error) {
-        // Expected to throw
+        // expected to throw
       }
 
-      // Check that no sensitive data was logged
       const loggedMessages = [
         ...consoleSpy.mock.calls.flat(),
         ...consoleErrorSpy.mock.calls.flat(),
@@ -88,13 +87,11 @@ describe('Security Tests', () => {
       });
 
       await expect(NexusGG.manage.getAllMembers()).rejects.toThrow();
-      // The error should not contain the actual API key or secret
     });
   });
 
   describe('Request Security', () => {
     it('should use HTTPS for all requests', async () => {
-      // This test ensures that the baseURL is always HTTPS
       const config = require('../../src/core/config').Config;
       expect(config.baseURL).toMatch(/^https:\/\//);
     });
@@ -106,7 +103,6 @@ describe('Security Tests', () => {
         .reply(200, { members: [] });
 
       await NexusGG.manage.getAllMembers();
-      // If the header is missing or incorrect, nock will not match and the test will fail
     });
 
     it('should not expose internal error details', async () => {
@@ -117,7 +113,6 @@ describe('Security Tests', () => {
       });
 
       await expect(NexusGG.manage.getAllMembers()).rejects.toThrow();
-      // The error should not expose stack traces or internal codes
     });
   });
 
@@ -141,7 +136,6 @@ describe('Security Tests', () => {
 
       const result = await NexusGG.attribution.sendTransaction(maliciousInput);
       expect(result).toBeDefined();
-      // The SDK should handle malicious input gracefully
     });
 
     it('should handle SQL injection attempts', async () => {
@@ -164,7 +158,6 @@ describe('Security Tests', () => {
       const result =
         await NexusGG.attribution.sendTransaction(sqlInjectionInput);
       expect(result).toBeDefined();
-      // The SDK should handle SQL injection attempts gracefully
     });
   });
 
