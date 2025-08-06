@@ -210,4 +210,243 @@ describe('Transaction Service', () => {
     const result = await NexusGG.attribution.sendTransaction(validRequest);
     expect(result).toEqual(mockResponse);
   });
+
+  describe('Input Validation', () => {
+    it('should validate transaction date format', async () => {
+      const invalidDateRequest = {
+        playerName: 'test',
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 100,
+        transactionId: 'test',
+        transactionDate: 'invalid-date', // Invalid format
+      };
+
+      nock(baseURL)
+        .post('/attributions/transactions', [invalidDateRequest])
+        .reply(400, { message: 'Invalid date format' });
+
+      await expect(
+        NexusGG.attribution.sendTransaction(invalidDateRequest),
+      ).rejects.toThrow();
+    });
+
+    it('should validate player name is not empty', async () => {
+      const emptyPlayerRequest = {
+        playerName: '', // Empty player name
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 100,
+        transactionId: 'test',
+        transactionDate: new Date().toISOString(),
+      };
+
+      nock(baseURL)
+        .post('/attributions/transactions', [emptyPlayerRequest])
+        .reply(400, { message: 'Player name cannot be empty' });
+
+      await expect(
+        NexusGG.attribution.sendTransaction(emptyPlayerRequest),
+      ).rejects.toThrow();
+    });
+
+    it('should validate transaction ID format', async () => {
+      const invalidTransactionIdRequest = {
+        playerName: 'test',
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 100,
+        transactionId: '', // Empty transaction ID
+        transactionDate: new Date().toISOString(),
+      };
+
+      nock(baseURL)
+        .post('/attributions/transactions', [invalidTransactionIdRequest])
+        .reply(400, { message: 'Transaction ID cannot be empty' });
+
+      await expect(
+        NexusGG.attribution.sendTransaction(invalidTransactionIdRequest),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('Network Error Handling', () => {
+    it('should handle network disconnections', async () => {
+      nock(baseURL)
+        .post('/attributions/transactions')
+        .replyWithError(new Error('ECONNRESET'));
+
+      const request = {
+        playerName: 'test',
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 100,
+        transactionId: 'test',
+        transactionDate: new Date().toISOString(),
+      };
+
+      await expect(
+        NexusGG.attribution.sendTransaction(request),
+      ).rejects.toThrow();
+    });
+
+    it('should handle rate limiting', async () => {
+      nock(baseURL)
+        .post('/attributions/transactions')
+        .reply(429, { message: 'Rate limit exceeded' });
+
+      const request = {
+        playerName: 'test',
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 100,
+        transactionId: 'test',
+        transactionDate: new Date().toISOString(),
+      };
+
+      await expect(
+        NexusGG.attribution.sendTransaction(request),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('Boundary Testing', () => {
+    it('should handle maximum transaction amounts', async () => {
+      const maxAmountRequest = {
+        playerName: 'test',
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: Number.MAX_SAFE_INTEGER,
+        transactionId: 'test',
+        transactionDate: new Date().toISOString(),
+      };
+
+      const mockResponse = {
+        transaction: {
+          id: 'test',
+          ...maxAmountRequest,
+          total: Number.MAX_SAFE_INTEGER,
+          memberSharePercent: 10,
+        },
+      };
+
+      nock(baseURL)
+        .post('/attributions/transactions', [maxAmountRequest])
+        .reply(200, mockResponse);
+
+      const result =
+        await NexusGG.attribution.sendTransaction(maxAmountRequest);
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('should handle minimum valid transaction amounts', async () => {
+      const minAmountRequest = {
+        playerName: 'test',
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 0.01, // Minimum valid amount
+        transactionId: 'test',
+        transactionDate: new Date().toISOString(),
+      };
+
+      const mockResponse = {
+        transaction: {
+          id: 'test',
+          ...minAmountRequest,
+          total: 0.01,
+          memberSharePercent: 10,
+        },
+      };
+
+      nock(baseURL)
+        .post('/attributions/transactions', [minAmountRequest])
+        .reply(200, mockResponse);
+
+      const result =
+        await NexusGG.attribution.sendTransaction(minAmountRequest);
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('should handle very long player names', async () => {
+      const longNameRequest = {
+        playerName: 'a'.repeat(1000), // Very long player name
+        code: 'test',
+        currency: 'USD',
+        description: 'test',
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 100,
+        transactionId: 'test',
+        transactionDate: new Date().toISOString(),
+      };
+
+      const mockResponse = {
+        transaction: {
+          id: 'test',
+          ...longNameRequest,
+          total: 100,
+          memberSharePercent: 10,
+        },
+      };
+
+      nock(baseURL)
+        .post('/attributions/transactions', [longNameRequest])
+        .reply(200, mockResponse);
+
+      const result = await NexusGG.attribution.sendTransaction(longNameRequest);
+      expect(result).toEqual(mockResponse);
+    });
+  });
+
+  describe('Performance Testing', () => {
+    it('should handle large transaction batches efficiently', async () => {
+      const largeBatch = Array.from({ length: 100 }, (_, i) => ({
+        playerName: `player${i}`,
+        code: `code${i}`,
+        currency: 'USD',
+        description: `item${i}`,
+        platform: 'PC',
+        status: 'Normal' as const,
+        subtotal: 100,
+        transactionId: `transaction${i}`,
+        transactionDate: new Date().toISOString(),
+      }));
+
+      const mockResponse = largeBatch.map((transaction, i) => ({
+        transaction: { ...transaction, id: `TransactionID${i}`, total: 100 },
+      }));
+
+      nock(baseURL)
+        .post('/attributions/transactions', largeBatch)
+        .reply(200, mockResponse);
+
+      const startTime = Date.now();
+      const result = await NexusGG.attribution.sendTransaction(largeBatch);
+      const endTime = Date.now();
+
+      expect(result).toEqual(mockResponse);
+      expect(endTime - startTime).toBeLessThan(5000); // Should complete within 5 seconds
+    });
+  });
 });
